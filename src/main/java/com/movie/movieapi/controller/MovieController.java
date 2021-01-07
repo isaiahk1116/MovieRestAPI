@@ -39,4 +39,14 @@ public class MovieController {
         } else
             return "Failure";
     }
+
+    @PutMapping(value= "movie")
+    public String updateMovie(@RequestParam long id, @RequestBody Movie newMovie) {
+        if (moviesService.movieExists(id)) {
+            moviesService.updateMovie(id, newMovie);
+            return "Success";
+        } else
+            return "Failure";
+    }
+
 }

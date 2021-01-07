@@ -25,6 +25,12 @@ public class MoviesService {
 
     public void deleteMovie(long id) { movieRepository.deleteById(id); }
 
+    public void updateMovie(long id, Movie newMovie) {
+        Movie existingMovie = movieRepository.findById(id).orElse(null);
+        existingMovie = newMovie;
+        movieRepository.save(existingMovie);
+    }
+
     public boolean movieExists(long id) { return movieRepository.existsById(id); }
 
     public Movie addMovie(Movie movie) {
