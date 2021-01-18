@@ -20,10 +20,8 @@ public class MovieController {
         return moviesService.getMovies();
     }
 
-    @GetMapping(value ="movie")
-    public Movie getMovieById(@RequestParam long id) {
-       return moviesService.getMovie(id);
-    }
+    @GetMapping(value ="{id}")
+    public Movie getMovieById(@PathVariable long id) { return moviesService.getMovie(id); }
 
     @PostMapping
     public String saveMovie(@RequestBody Movie newMovie) {
@@ -31,8 +29,8 @@ public class MovieController {
         return movie != null ? "Success" : "Failure";
     }
 
-    @DeleteMapping(value= "movie")
-    public String deleteMovie(@RequestParam long id) {
+    @DeleteMapping(value = "{id}")
+    public String deleteMovie(@PathVariable long id) {
         if (moviesService.movieExists(id)) {
             moviesService.deleteMovie(id);
             return "Success";
@@ -40,8 +38,8 @@ public class MovieController {
             return "Failure";
     }
 
-    @PutMapping(value= "movie")
-    public String updateMovie(@RequestParam long id, @RequestBody Movie newMovie) {
+    @PutMapping(value= "{id}")
+    public String updateMovie(@PathVariable long id, @RequestBody Movie newMovie) {
         if (moviesService.movieExists(id)) {
             moviesService.updateMovie(id, newMovie);
             return "Success";
