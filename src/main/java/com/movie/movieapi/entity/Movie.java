@@ -15,6 +15,6 @@ public class Movie {
     @GeneratedValue
     private long id;
     private String title;
-    private String director;
-    private long duration;
+    private String genre;
+    private long year;
 }

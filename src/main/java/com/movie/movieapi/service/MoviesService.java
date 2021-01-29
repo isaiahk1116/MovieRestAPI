@@ -44,9 +44,9 @@ public class MoviesService {
     @PostConstruct
     public void addData() {
         Movie test = new Movie();
-        test.setTitle("Test");
-        test.setDuration(100l);
-        test.setDirector("test director");
+        test.setTitle("The Dark Knight");
+        test.setYear(2008);
+        test.setGenre("Action");
         movieRepository.save(test);
     }
 
