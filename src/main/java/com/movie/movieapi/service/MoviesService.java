@@ -1,11 +1,11 @@
 package com.movie.movieapi.service;
 
 import com.movie.movieapi.entity.Movie;
+import com.movie.movieapi.exception.ResourceNotFoundException;
 import com.movie.movieapi.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 import javax.annotation.PostConstruct;
 import java.util.List;
 
@@ -21,30 +21,33 @@ public class MoviesService {
     }
 
     // Accepts an id and returns the corresponding movie
-    public Movie getMovie(long id) {
-        return movieRepository.findById(id).orElse(null);
+    public ResponseEntity<Movie> getMovie(long id) throws ResourceNotFoundException {
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Movie not found: " + id));
+        return ResponseEntity.ok().body(movie);
     }
 
     // Accepts an id and deletes the corresponding movie
-    public void deleteMovie(long id) { movieRepository.deleteById(id); }
-
-    // Accepts an id and a movie object to update the movie corresponding to the id
-    public void updateMovie(long id, Movie newMovie) {
-        Movie existingMovie = movieRepository.findById(id).orElse(null);
-        existingMovie = newMovie;
-        movieRepository.save(existingMovie);
+    public String deleteMovie(long id) throws ResourceNotFoundException {
+        Movie movie = movieRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Movie not found: " + id));
+        movieRepository.deleteById(id);
+        return "deleted";
     }
 
-    // Accepts an id and searches for the corresponding movie
-    public boolean movieExists(long id) { return movieRepository.existsById(id); }
+    // Accepts an id and a movie object to update the movie corresponding to the id
+    public ResponseEntity<Movie> updateMovie(long id, Movie newMovie) throws ResourceNotFoundException {
+        Movie updatedMovie = movieRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Movie not found:" + id));
+        updatedMovie.setId(id);
+        updatedMovie.setTitle(newMovie.getTitle());
+        updatedMovie.setGenre(newMovie.getGenre());
+        updatedMovie.setYear(newMovie.getYear());
+        movieRepository.save(updatedMovie);
+        return ResponseEntity.ok(updatedMovie);
+    }
 
     // Accepts a movie object and saves it to the database
-    public Movie addMovie(Movie movie) {
-        if(StringUtils.hasText(movie.getTitle())) {
-            return movieRepository.save(movie);
-        } else {
-            return null;
-        }
+    public ResponseEntity<Movie> addMovie(Movie movie) {
+        movieRepository.save(movie);
+        return ResponseEntity.ok(movie);
     }
 
     // Initializes the database with a default movie
@@ -56,5 +59,4 @@ public class MoviesService {
         test.setGenre("Action");
         movieRepository.save(test);
     }
-
 }
